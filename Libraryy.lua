@@ -15,7 +15,15 @@ local InterfaceBuild,Release="3K3W","Build 1.68"
 local RayfieldFolder="Rayfield"
 local ConfigurationFolder=RayfieldFolder.."/Configurations"
 local ConfigurationExtension=".rfld"
-local ToggleKey="K"
+local requestFunc=(syn and syn.request)or(fluxus and fluxus.request)or(http and http.request)or http_request or request
+local settingsTable={General={rayfieldOpen={Type="bind",Value="K",Name="Rayfield Keybind"}}}
+local overriddenSettings={}
+local function overrideSetting(c,n,v)overriddenSettings[c.."."..n]=v end
+local function getSetting(c,n)
+local o=overriddenSettings[c.."."..n]
+if o~=nil then return o end
+if settingsTable[c][n]~=nil then return settingsTable[c][n].Value end
+end
 local HttpService,RunService,TextService=getService("HttpService"),getService("RunService"),getService("TextService")
 local UserInputService,TweenService,Players,CoreGui=getService("UserInputService"),getService("TweenService"),getService("Players"),getService("CoreGui")
 local requestsOK=true
@@ -140,6 +148,10 @@ R.Shadow.Image.ImageColor3=SelectedTheme.Shadow
 R.Topbar.ChangeSize.ImageColor3=SelectedTheme.TextColor
 R.Topbar.Hide.ImageColor3=SelectedTheme.TextColor
 R.Topbar.Search.ImageColor3=SelectedTheme.TextColor
+if Topbar:FindFirstChild("Settings")then
+R.Topbar.Settings.ImageColor3=SelectedTheme.TextColor
+R.Topbar.Divider.BackgroundColor3=SelectedTheme.ElementStroke
+end
 Main.Search.BackgroundColor3=SelectedTheme.TextColor
 Main.Search.Shadow.ImageColor3=SelectedTheme.TextColor
 Main.Search.Search.ImageColor3=SelectedTheme.TextColor
@@ -355,7 +367,7 @@ end
 task.spawn(closeSearch)
 Debounce=true
 if notify then
-RayfieldLibrary:Notify({Title="Interface Hidden",Content=useMobilePrompt and"The interface has been hidden, you can unhide the interface by tapping 'Show'."or("The interface has been hidden, you can unhide the interface by tapping "..ToggleKey.."."),Duration=7,Image=4400697855})
+RayfieldLibrary:Notify({Title="Interface Hidden",Content=useMobilePrompt and"The interface has been hidden, you can unhide the interface by tapping 'Show'."or("The interface has been hidden, you can unhide the interface by tapping "..getSetting("General","rayfieldOpen").."."),Duration=7,Image=4400697855})
 end
 tw(Main,.5,{Size=UDim2.new(0,470,0,0)})tw(Main.Topbar,.5,{Size=UDim2.new(0,470,0,45)})
 tw(Main,.5,{BackgroundTransparency=1})tw(Main.Topbar,.5,{BackgroundTransparency=1})tw(Main.Topbar.Divider,.5,{BackgroundTransparency=1})
@@ -487,6 +499,78 @@ e.MouseLeave:Connect(function()tw(e,.6,{BackgroundColor3=SelectedTheme.ElementBa
 end
 local function themeChanged(f)Rayfield.Main:GetPropertyChangedSignal("BackgroundColor3"):Connect(f)end
 
+local settingsCreated,settingsInitialized,cachedSettings=false,false
+local function loadSettings()
+task.spawn(function()
+local file
+local f=RayfieldFolder.."/settings"..ConfigurationExtension
+if isfolder and isfolder(RayfieldFolder)and isfile and isfile(f)then file=readfile(f)end
+if file then
+local ok,d=pcall(function()return HttpService:JSONDecode(file)end)
+file=ok and d or{}
+else file={}end
+if not settingsCreated then cachedSettings=file return end
+for cn,cat in pairs(settingsTable)do
+if file[cn]then
+for sn,st in pairs(cat)do
+if file[cn][sn]then st.Value=file[cn][sn].Value st.Element:Set(getSetting(cn,sn))end
+end
+end
+end
+settingsInitialized=true
+end)
+end
+loadSettings()
+local function saveSettings()
+local copy={}
+for cn,cat in pairs(settingsTable)do
+copy[cn]={}
+for sn,st in pairs(cat)do copy[cn][sn]={Value=st.Value,Type=st.Type,Name=st.Name}end
+end
+local ok,enc=pcall(function()return HttpService:JSONEncode(copy)end)
+if ok and writefile then writefile(RayfieldFolder.."/settings"..ConfigurationExtension,enc)end
+end
+local function updateSetting(c,n,v)
+if not settingsInitialized then return end
+settingsTable[c][n].Value=v
+overriddenSettings[c.."."..n]=nil
+saveSettings()
+end
+local function createSettings(window)
+if not(writefile and isfile and readfile and isfolder and makefolder)then
+local sb=Topbar:FindFirstChild("Settings")
+if sb then sb.Visible=false end
+Topbar.Search.Position=UDim2.new(1,-75,.5,0)
+warn("Can't create settings as no file-saving functionality is available.")
+return
+end
+local newTab=window:CreateTab("Rayfield Settings",0,true)
+if TabList["Rayfield Settings"]then TabList["Rayfield Settings"].LayoutOrder=1000 end
+if Elements["Rayfield Settings"]then Elements["Rayfield Settings"].LayoutOrder=1000 end
+for cn,cat in pairs(settingsTable)do
+newTab:CreateSection(cn)
+for sn,st in pairs(cat)do
+local cb=function(v)updateSetting(cn,sn,v)end
+if st.Type=="input"then
+st.Element=newTab:CreateInput({Name=st.Name,CurrentValue=st.Value,PlaceholderText=st.Placeholder,Ext=true,RemoveTextAfterFocusLost=st.ClearOnFocus,Callback=cb})
+elseif st.Type=="toggle"then
+st.Element=newTab:CreateToggle({Name=st.Name,CurrentValue=st.Value,Ext=true,Callback=cb})
+elseif st.Type=="bind"then
+st.Element=newTab:CreateKeybind({Name=st.Name,CurrentKeybind=st.Value,HoldToInteract=false,Ext=true,CallOnChange=true,Callback=cb})
+end
+end
+end
+settingsCreated=true
+loadSettings()
+saveSettings()
+end
+local function keyOut(KM)
+tw(KM,.6,{BackgroundTransparency=1})tw(KM,.6,{Size=UDim2.new(0,467,0,175)})tw(KM.Shadow.Image,.5,{ImageTransparency=1})
+tw(KM.Title,.4,{TextTransparency=1})tw(KM.Subtitle,.5,{TextTransparency=1})tw(KM.KeyNote,.5,{TextTransparency=1})
+tw(KM.Input,.5,{BackgroundTransparency=1})tw(KM.Input.UIStroke,.5,{Transparency=1})tw(KM.Input.InputBox,.5,{TextTransparency=1})
+tw(KM.NoteTitle,.4,{TextTransparency=1})tw(KM.NoteMessage,.4,{TextTransparency=1})tw(KM.Hide,.4,{ImageTransparency=1})
+end
+
 function RayfieldLibrary:CreateWindow(Settings)
 if Rayfield:FindFirstChild("Loading")and getgenv and not getgenv().rayfieldCached then
 Rayfield.Enabled=true Rayfield.Loading.Visible=true
@@ -499,10 +583,10 @@ local kb=Settings.ToggleUIKeybind
 if type(kb)=="string"then
 kb=string.upper(kb)
 assert(pcall(function()return Enum.KeyCode[kb]end),"ToggleUIKeybind must be a valid KeyCode")
-ToggleKey=kb
+overrideSetting("General","rayfieldOpen",kb)
 elseif typeof(kb)=="EnumItem"then
 assert(kb.EnumType==Enum.KeyCode,"ToggleUIKeybind must be a KeyCode enum")
-ToggleKey=kb.Name
+overrideSetting("General","rayfieldOpen",kb.Name)
 else error("ToggleUIKeybind must be a string or KeyCode enum")end
 end
 pcall(function()if isfolder and not isfolder(RayfieldFolder)then makefolder(RayfieldFolder)end end)
@@ -543,6 +627,108 @@ dragBar.Position=useMobileSizing and UDim2.new(.5,0,.5,dragOffsetMobile)or UDim2
 makeDraggable(Main,dragInteract,true,{dragOffset,dragOffsetMobile})
 end
 eachTabBtn(function(b)b.BackgroundTransparency=1 b.Title.TextTransparency=1 b.Image.ImageTransparency=1 b.UIStroke.Transparency=1 end)
+
+if Settings.Discord and Settings.Discord.Enabled then
+local dir=RayfieldFolder.."/Discord Invites"
+if isfolder and not isfolder(dir)then makefolder(dir)end
+local df=dir.."/"..Settings.Discord.Invite..ConfigurationExtension
+if isfile and not isfile(df)then
+if requestFunc then
+pcall(function()
+requestFunc({Url="http://127.0.0.1:6463/rpc?v=1",Method="POST",Headers={["Content-Type"]="application/json",Origin="https://discord.com"},Body=HttpService:JSONEncode({cmd="INVITE_BROWSER",nonce=HttpService:GenerateGUID(false),args={code=Settings.Discord.Invite}})})
+end)
+end
+if Settings.Discord.RememberJoins then writefile(df,"Rayfield RememberJoins is true for this invite, this invite will not ask you to join again")end
+end
+end
+local Passthrough=false
+if Settings.KeySystem and Settings.KeySettings then
+local KS=Settings.KeySettings
+if isfolder and not isfolder(RayfieldFolder.."/Key System")then makefolder(RayfieldFolder.."/Key System")end
+if typeof(KS.Key)=="string"then KS.Key={KS.Key}end
+if KS.GrabKeyFromSite then
+for i,Key in ipairs(KS.Key)do
+local ok,resp=pcall(function()
+KS.Key[i]=tostring(game:HttpGet(Key):gsub("[\n\r]"," "))
+KS.Key[i]=string.gsub(KS.Key[i]," ","")
+end)
+if not ok then print("Rayfield | "..Key.." Error "..tostring(resp))warn("Check docs.sirius.menu for help with Rayfield specific development.")end
+end
+end
+KS.FileName=KS.FileName or"No file name specified"
+local keyFile=RayfieldFolder.."/Key System/"..KS.FileName..ConfigurationExtension
+if isfile and isfile(keyFile)then
+for _,k in ipairs(KS.Key)do if string.find(readfile(keyFile),k)then Passthrough=true end end
+end
+if not Passthrough then
+local Attempts=math.random(2,5)
+Rayfield.Enabled=false
+local KeyUI=game:GetObjects("rbxassetid://11380036235")[1]
+KeyUI.Enabled=true
+if gethui then KeyUI.Parent=gethui()
+elseif syn and syn.protect_gui then syn.protect_gui(KeyUI)KeyUI.Parent=CoreGui
+elseif CoreGui:FindFirstChild("RobloxGui")then KeyUI.Parent=CoreGui.RobloxGui
+else KeyUI.Parent=CoreGui end
+for _,i in ipairs((gethui and gethui()or CoreGui):GetChildren())do
+if i.Name==KeyUI.Name and i~=KeyUI then i.Enabled=false i.Name="KeyUI-Old"end
+end
+local KM=KeyUI.Main
+KM.Title.Text=KS.Title or Settings.Name
+KM.Subtitle.Text=KS.Subtitle or"Key System"
+KM.NoteMessage.Text=KS.Note or"No instructions"
+KM.Size=UDim2.new(0,467,0,175)KM.BackgroundTransparency=1 KM.Shadow.Image.ImageTransparency=1
+KM.Title.TextTransparency=1 KM.Subtitle.TextTransparency=1 KM.KeyNote.TextTransparency=1
+KM.Input.BackgroundTransparency=1 KM.Input.UIStroke.Transparency=1 KM.Input.InputBox.TextTransparency=1
+KM.NoteTitle.TextTransparency=1 KM.NoteMessage.TextTransparency=1 KM.Hide.ImageTransparency=1
+tw(KM,.6,{BackgroundTransparency=0})tw(KM,.6,{Size=UDim2.new(0,500,0,187)})tw(KM.Shadow.Image,.5,{ImageTransparency=.5})
+task.wait(.05)
+tw(KM.Title,.4,{TextTransparency=0})tw(KM.Subtitle,.5,{TextTransparency=0})
+task.wait(.05)
+tw(KM.KeyNote,.5,{TextTransparency=0})tw(KM.Input,.5,{BackgroundTransparency=0})tw(KM.Input.UIStroke,.5,{Transparency=0})tw(KM.Input.InputBox,.5,{TextTransparency=0})
+task.wait(.05)
+tw(KM.NoteTitle,.4,{TextTransparency=0})tw(KM.NoteMessage,.4,{TextTransparency=0})
+task.wait(.15)
+tw(KM.Hide,.4,{ImageTransparency=.3})
+KM.Input.InputBox.FocusLost:Connect(function()
+local txt=KM.Input.InputBox.Text
+if #txt==0 then return end
+local found,fk=false,""
+for _,k in ipairs(KS.Key)do if txt==k then found=true fk=k end end
+if found then
+keyOut(KM)
+task.wait(.51)
+Passthrough=true KM.Visible=false
+if KS.SaveKey then
+if writefile then writefile(keyFile,fk)end
+RayfieldLibrary:Notify({Title="Key System",Content="The key for this script has been saved successfully.",Image=3605522284})
+end
+else
+if Attempts==0 then
+keyOut(KM)
+task.wait(.45)
+Players.LocalPlayer:Kick("No Attempts Remaining")
+game:Shutdown()
+end
+KM.Input.InputBox.Text=""
+Attempts-=1
+tw(KM,.6,{Size=UDim2.new(0,467,0,175)})
+tw(KM,.4,{Position=UDim2.new(.495,0,.5,0)},Enum.EasingStyle.Elastic)
+task.wait(.1)
+tw(KM,.4,{Position=UDim2.new(.505,0,.5,0)},Enum.EasingStyle.Elastic)
+task.wait(.1)
+tw(KM,.4,{Position=UDim2.new(.5,0,.5,0)})
+tw(KM,.6,{Size=UDim2.new(0,500,0,187)})
+end
+end)
+KM.Hide.MouseButton1Click:Connect(function()
+keyOut(KM)
+task.wait(.51)
+RayfieldLibrary:Destroy()
+KeyUI:Destroy()
+end)
+end
+else Passthrough=true end
+repeat task.wait()until Passthrough
 Notifications.Template.Visible=false Notifications.Visible=true Rayfield.Enabled=true
 task.wait(.5)
 tw(Main,.7,{BackgroundTransparency=0})tw(Main.Shadow.Image,.7,{ImageTransparency=.6})
@@ -1403,6 +1589,7 @@ tw(Main,.6,{Size=useMobileSizing and UDim2.new(0,570,0,275)or UDim2.new(0,570,0,
 tw(Main.Shadow.Image,.5,{ImageTransparency=.6})
 Topbar.BackgroundTransparency=1 Topbar.Divider.Size=UDim2.new(0,0,0,1)Topbar.Divider.BackgroundColor3=SelectedTheme.ElementStroke
 Topbar.CornerRepair.BackgroundTransparency=1 Topbar.Title.TextTransparency=1 Topbar.Search.ImageTransparency=1
+if Topbar:FindFirstChild("Settings")then Topbar.Settings.ImageTransparency=1 end
 Topbar.ChangeSize.ImageTransparency=1 Topbar.Hide.ImageTransparency=1
 task.wait(.5)
 Topbar.Visible=true
@@ -1412,6 +1599,7 @@ tw(Topbar.Divider,1,{Size=UDim2.new(1,0,0,1)})tw(Topbar.Title,.6,{TextTransparen
 task.wait(.05)
 tw(Topbar.Search,.6,{ImageTransparency=.8})
 task.wait(.05)
+if Topbar:FindFirstChild("Settings")then tw(Topbar.Settings,.6,{ImageTransparency=.8})task.wait(.05)end
 tw(Topbar.ChangeSize,.6,{ImageTransparency=.8})
 task.wait(.05)
 tw(Topbar.Hide,.6,{ImageTransparency=.8})
@@ -1424,6 +1612,7 @@ else
 RayfieldLibrary:Notify({Title="Theme Changed",Content="Successfully changed theme to "..(typeof(NewTheme)=="string"and NewTheme or"Custom Theme").."."  ,Image=4483362748})
 end
 end
+if not pcall(function()createSettings(Window)end)then warn("Rayfield had an issue creating settings.")end
 return Window
 end
 
@@ -1436,9 +1625,17 @@ function RayfieldLibrary:IsVisible()return not Hidden end
 local hideConn
 function RayfieldLibrary:Destroy()rayfieldDestroyed=true hideConn:Disconnect()Rayfield:Destroy()end
 
--- Settings button is removed (no settings tab in this build)
-if Topbar:FindFirstChild("Settings")then Topbar.Settings:Destroy()end
-Topbar.Search.Position=UDim2.new(1,-75,.5,0)
+if Topbar:FindFirstChild("Settings")then
+Topbar.Settings.MouseButton1Click:Connect(function()
+task.spawn(function()
+eachTabBtn(function(o)
+tw(o,.7,{BackgroundColor3=SelectedTheme.TabBackground})tw(o.Title,.7,{TextColor3=SelectedTheme.TabTextColor})tw(o.Image,.7,{ImageColor3=SelectedTheme.TabTextColor})
+tabBtnState(o,.7,.2,.2,.5,.7)
+end)
+Elements.UIPageLayout:JumpTo(Elements["Rayfield Settings"])
+end)
+end)
+end
 
 Topbar.ChangeSize.MouseButton1Click:Connect(function()
 if Debounce then return end
@@ -1470,7 +1667,7 @@ end)
 Topbar.Search.MouseButton1Click:Connect(function()task.spawn(function()if searchOpen then closeSearch()else openSearch()end end)end)
 Topbar.Hide.MouseButton1Click:Connect(function()setVisibility(Hidden,not useMobileSizing)end)
 hideConn=UserInputService.InputBegan:Connect(function(input,processed)
-if input.KeyCode==Enum.KeyCode[ToggleKey]and not processed then
+if input.KeyCode==Enum.KeyCode[getSetting("General","rayfieldOpen")]and not processed then
 if Debounce then return end
 if Hidden then Hidden=false Unhide()else Hidden=true Hide()end
 end

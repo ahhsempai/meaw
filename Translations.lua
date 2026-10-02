@@ -1,15 +1,15 @@
 return {
     WARNING = {
-        ['en-us'] = 'Use an alt account or be extremely careful. <font color="rgb(186, 52, 52)">NEVER enable blatant features on a main account, you WILL get banned.</font>',
-        ['es-es'] = 'Usa una cuenta alternativa o ten mucho cuidado. <font color="rgb(186, 52, 52)">NUNCA actives funciones descaradas en una cuenta principal, TE BANEArán.</font>',
-        ['fr-fr'] = 'Utilisez un compte secondaire ou soyez extrêmement prudent. <font color="rgb(186, 52, 52)">N’activez JAMAIS des fonctionnalités flagrantes sur un compte principal, vous SEREZ banni.</font>',
-        ['de-de'] = 'Verwende einen Zweitaccount oder sei äußerst vorsichtig. <font color="rgb(186, 52, 52)">Aktiviere NIEMALS auffällige Funktionen auf einem Hauptaccount, du WIRST gebannt.</font>',
-        ['it-it'] = 'Usa un account alternativo o fai molta attenzione. <font color="rgb(186, 52, 52)">NON attivare MAI funzionalità evidenti su un account principale, verrai BANNATO.</font>',
-        ['pt-br'] = 'Use uma conta alternativa ou tenha muito cuidado. <font color="rgb(186, 52, 52)">NUNCA ative recursos óbvios em uma conta principal, você SERÁ banido.</font>',
-        ['ja-jp'] = 'サブアカウントを使用するか、十分に注意してください。<font color="rgb(186, 52, 52)">メインアカウントでは絶対に露骨な機能を有効にしないでください。確実にBANされます。</font>',
-        ['ko-kr'] = '부계정을 사용하거나 매우 주의하세요. <font color="rgb(186, 52, 52)">본계정에서는 절대로 대놓고 사용하는 기능을 활성화하지 마세요. 반드시 정지됩니다.</font>',
-        ['zh-cn'] = '使用小号或务必小心。<font color="rgb(186, 52, 52)">绝对不要在主账号上启用明显的功能，否则你一定会被封禁。</font>',
-        ['zh-tw'] = '使用小號或務必小心。<font color="rgb(186, 52, 52)">絕對不要在主帳號上啟用明顯的功能，否則你一定會被封禁。</font>',
+        ['en-us'] = 'Use an alt account or be extremely careful. <font color="rgb(186, 52, 252)">NEVER enable blatant features on a main account, you WILL get banned.</font>',
+        ['es-es'] = 'Usa una cuenta alternativa o ten mucho cuidado. <font color="rgb(186, 52, 252)">NUNCA actives funciones descaradas en una cuenta principal, TE BANEArán.</font>',
+        ['fr-fr'] = 'Utilisez un compte secondaire ou soyez extrêmement prudent. <font color="rgb(186, 52, 252)">N’activez JAMAIS des fonctionnalités flagrantes sur un compte principal, vous SEREZ banni.</font>',
+        ['de-de'] = 'Verwende einen Zweitaccount oder sei äußerst vorsichtig. <font color="rgb(186, 52, 252)">Aktiviere NIEMALS auffällige Funktionen auf einem Hauptaccount, du WIRST gebannt.</font>',
+        ['it-it'] = 'Usa un account alternativo o fai molta attenzione. <font color="rgb(186, 52, 252)">NON attivare MAI funzionalità evidenti su un account principale, verrai BANNATO.</font>',
+        ['pt-br'] = 'Use uma conta alternativa ou tenha muito cuidado. <font color="rgb(186, 52, 252)">NUNCA ative recursos óbvios em uma conta principal, você SERÁ banido.</font>',
+        ['ja-jp'] = 'サブアカウントを使用するか、十分に注意してください。<font color="rgb(186, 52, 252)">メインアカウントでは絶対に露骨な機能を有効にしないでください。確実にBANされます。</font>',
+        ['ko-kr'] = '부계정을 사용하거나 매우 주의하세요. <font color="rgb(186, 52, 252)">본계정에서는 절대로 대놓고 사용하는 기능을 활성화하지 마세요. 반드시 정지됩니다.</font>',
+        ['zh-cn'] = '使用小号或务必小心。<font color="rgb(186, 52, 252)">绝对不要在主账号上启用明显的功能，否则你一定会被封禁。</font>',
+        ['zh-tw'] = '使用小號或務必小心。<font color="rgb(186, 52, 252)">絕對不要在主帳號上啟用明顯的功能，否則你一定會被封禁。</font>',
     },
 
     WARNING_2 = {

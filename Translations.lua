@@ -26,16 +26,16 @@ return {
     },
 
     FEATURES_INFO = {
-        ['en-us'] = 'This script has no paid or keyed features. If a feature won’t enable, open the Miscellaneous tab, locate Blatant Mode, and turn it on.',
-        ['es-es'] = 'Este script no tiene funciones de pago ni con clave. Si una función no se activa, abre la pestaña Miscelánea, busca Blatant Mode y actívalo.',
-        ['fr-fr'] = 'Ce script ne comporte aucune fonctionnalité payante ni nécessitant une clé. Si une fonctionnalité ne s’active pas, ouvrez l’onglet Divers, repérez Blatant Mode et activez-le.',
-        ['de-de'] = 'Dieses Skript bietet keine kostenpflichtigen oder schlüsselgeschützten Funktionen. Wenn sich eine Funktion nicht aktivieren lässt, öffne den Tab „Sonstiges“, suche Blatant Mode und schalte ihn ein.',
-        ['it-it'] = 'Questo script non include funzionalità a pagamento o con chiave. Se una funzionalità non si attiva, apri la scheda Varie, individua Blatant Mode e attivalo.',
-        ['pt-br'] = 'Este script não possui recursos pagos ou com chave. Se um recurso não ativar, abra a aba Miscellaneous, localize o Blatant Mode e ative-o.',
-        ['ja-jp'] = 'このスクリプトに有料機能やキー機能はありません。機能が有効にならない場合は、Miscellaneous タブを開き、Blatant Mode を見つけてオンにしてください。',
-        ['ko-kr'] = '이 스크립트에는 유료 기능이나 키 기능이 없습니다. 기능이 활성화되지 않으면 Miscellaneous 탭을 열어 Blatant Mode 를 찾아 켜세요.',
-        ['zh-cn'] = '此脚本不含付费功能或密钥功能。如果某项功能无法启用，请打开 Miscellaneous 选项卡，找到 Blatant Mode 并开启它。',
-        ['zh-tw'] = '此腳本不含付費功能或金鑰功能。如果某項功能無法啟用，請打開 Miscellaneous 分頁，找到 Blatant Mode 並開啟它。',
+    ['en-us'] = 'There are no paid features or keyed features in this script. \nIf you see [blatant] and u want to use it -> go to the misc tab and find Blatant Mode and then enable it.',
+    ['es-es'] = 'No hay funciones de pago ni funciones con clave en este script. \nSi ves [blatant] y quieres usarlo -> ve a la pestaña misc y busca Blatant Mode y luego actívalo.',
+    ['fr-fr'] = 'Il n’y a aucune fonctionnalité payante ni fonctionnalité nécessitant une clé dans ce script. \nSi vous voyez [blatant] et que vous voulez l’utiliser -> allez dans l’onglet misc et trouvez Blatant Mode puis activez-le.',
+    ['de-de'] = 'Dieses Skript enthält keine kostenpflichtigen oder schlüsselgeschützten Funktionen. \nWenn du [blatant] siehst und es verwenden möchtest -> gehe zum misc-Tab, finde Blatant Mode und aktiviere es.',
+    ['it-it'] = 'Non ci sono funzionalità a pagamento o con chiave in questo script. \nSe vedi [blatant] e vuoi usarlo -> vai nella scheda misc e trova Blatant Mode, poi attivalo.',
+    ['pt-br'] = 'Não há recursos pagos ou recursos com chave neste script. \nSe você vir [blatant] e quiser usá-lo -> vá até a aba misc, encontre o Blatant Mode e ative-o.',
+    ['ja-jp'] = 'このスクリプトには有料機能やキーが必要な機能はありません。 \n[blatant] が表示されて使用したい場合は -> misc タブに移動して Blatant Mode を見つけ、有効にしてください。',
+    ['ko-kr'] = '이 스크립트에는 유료 기능이나 키가 필요한 기능이 없습니다. \n[blatant] 이 표시되고 사용하려면 -> misc 탭으로 이동하여 Blatant Mode 를 찾아 활성화하세요.',
+    ['zh-cn'] = '此脚本没有付费功能或需要密钥的功能。 \n如果你看到 [blatant] 并想使用它 -> 前往 misc 选项卡，找到 Blatant Mode 并启用它。',
+    ['zh-tw'] = '此腳本沒有付費功能或需要金鑰的功能。 \n如果你看到 [blatant] 並想使用它 -> 前往 misc 分頁，找到 Blatant Mode 並將其啟用。',
 },
 
     BLATANT_MODE = {
